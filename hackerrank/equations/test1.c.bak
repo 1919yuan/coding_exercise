@@ -1,0 +1,76 @@
+/* Enter your code here. Read input from STDIN. Print output to STDOUT */
+
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+#include <time.h>
+
+int main(int argc, char** argv)
+{
+    unsigned long long n, count_primes, iter_n, divisor, i, count, check;
+    char sn[20];
+    unsigned long long *primes;
+    unsigned long long *prime_decomposition, decompose_count;
+    gets(sn);
+    sscanf(sn, "%Lu", &n);
+    if (n <=0 ) return 1;
+    primes = (unsigned long long *) malloc(n * sizeof(unsigned long long));
+    primes[0]=1;
+    primes[1]=2;
+    count_primes=2;
+
+    clock_t start, end;
+    double elapsed;
+
+    start = clock();
+
+    for (iter_n=3; iter_n <= n; iter_n += 2)
+    {
+        divisor=3;
+        while (1)
+        {
+            if (divisor * divisor > iter_n || iter_n % divisor == 0)
+                break;
+            divisor+=2;
+        }
+        if (divisor * divisor > iter_n)
+            primes[count_primes++]=iter_n;
+    }
+    prime_decomposition=(unsigned long long*) calloc(count_primes,sizeof(unsigned long long));
+    
+    for (i=2; i <= n; i++)
+    {
+        check = i;
+        for (iter_n = 1; iter_n < count_primes && primes[iter_n]<=i; iter_n++)
+        {
+            decompose_count = 0;
+            while (check % primes[iter_n] == 0 && check >= primes[iter_n])
+            {
+                check = check / primes[iter_n];
+                decompose_count ++;
+            }
+            prime_decomposition[iter_n]+=decompose_count;
+        }
+    }
+    /* printf("%lu", count_primes); */
+    /* for (i=1; i < count_primes; i++) */
+    /*     printf("%u", (unsigned int) prime_decomposition[i]);  */
+    /* printf("\n"); */
+    for (iter_n=1; iter_n < count_primes; iter_n++)
+        prime_decomposition[iter_n] *=2;
+    count = 1;
+    for (i=1; i < count_primes; i++)
+    {
+        count *= (prime_decomposition[i]+1)%1000007;
+        count = count % 1000007;
+    }
+    printf("%Lu\n", count);
+    free(primes);
+    free(prime_decomposition);
+
+    end = clock();
+    elapsed = ((double) (end - start)) / CLOCKS_PER_SEC;
+    printf("Time used: %lf s\n", elapsed);
+
+    return 0;
+}

@@ -1,0 +1,65 @@
+/* Enter your code here. Read input from STDIN. Print output to STDOUT */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_LEN 100000
+
+int main (int argc, char** argv)
+{
+    int n, i, len, total_sim, inc, cnd;
+    char buffer[MAX_LEN];
+    char *pBuffer, *status;
+
+    char *p1, *p2;
+    int *T;
+   
+    if (!gets(buffer)) return;
+    sscanf(buffer, "%d", &n);
+    
+    for (i=0; i<n; i++)
+    {
+        if (!gets(buffer)) return;
+        len = strlen(buffer);
+        total_sim=len;
+        T = (int *) malloc(len * sizeof(int));
+        T[0]=-1;
+        T[1]=0;
+        cnd = 0;
+        inc = 2;
+        while (inc < len)
+        {
+            if (buffer[inc-1] == buffer[cnd])
+            {
+                cnd++;
+                T[inc]=cnd;
+                inc++;
+            }
+            else if (cnd > 0)
+            {
+                cnd = T[cnd];
+            }
+            else
+            {
+                T[inc]=0;
+                inc++;
+            }
+        }
+        for (inc = 1; inc < len; inc++)
+        {
+            if (buffer[inc]==buffer[0] && T[inc]==0)
+                total_sim++;
+            else if (T[inc]>0)
+            {
+                if (inc != len-1 && T[inc+1] < T[inc])
+                    total_sim += T[inc];
+                if (inc == len-1)
+                    total_sim += T[inc];
+            }
+        }
+        printf ("%d\n", total_sim);
+        free(T);
+    }
+    
+}

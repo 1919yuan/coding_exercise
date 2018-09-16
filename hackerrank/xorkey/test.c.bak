@@ -1,0 +1,90 @@
+/* Enter your code here. Read input from STDIN. Print output to STDOUT */
+
+#include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
+#include "limits.h"
+
+#define MAX_N 100000
+#define MAX_Q 50000
+#define MAX_LEN 10000000
+
+unsigned int xorq(unsigned int *numbers, unsigned int a, unsigned int p, unsigned int q)
+{
+    unsigned int res = 0, i, tmp;
+    for (i=p-1; i<q; i++)
+    {
+        tmp = numbers[i]^a;
+        if (tmp > res)
+            res = tmp;
+    }
+    return res;
+}
+
+int main (int argc, char** argv)   
+{
+    unsigned int n_testcase, query_iter, n, p, q, s, i, j, a;
+    char *buffer, *token;
+    unsigned int numbers[MAX_N];
+    char seps[]={' ',',','\t'};
+    buffer=(char *) malloc(MAX_LEN * sizeof(char));
+    
+    if (gets(buffer))
+    {
+        sscanf(buffer, "%u", &n_testcase);
+        for (query_iter = 0; query_iter < n_testcase; query_iter++)
+        {
+            if (gets(buffer))
+            {
+                sscanf(buffer, "%u %u", &n, &s);
+            }
+            else
+            {
+                free(buffer);
+                return 1;
+            }
+            if (gets(buffer))
+            {
+                i=0;
+                token = strtok (buffer, seps);
+                while (token != NULL)
+                {
+                    sscanf (token, "%u", &numbers[i++]);
+                    token = strtok (NULL, seps);
+                }
+                if (i!=n) 
+                {
+                    free(buffer); 
+                    return 1;
+                }
+            }
+            else
+            {
+                free(buffer);
+                return 1;
+            }
+            for (i=0; i<s; i++)
+            {
+                if (gets(buffer))
+                {
+                    sscanf(buffer, "%u %u %u", &a, &p, &q);
+                    /* if (q<p || q-p > MAX_Q) return 1;
+                    if (p <0 || p>n || q<0 || q>n) return 1;*/
+                    printf("%u\n", xorq(numbers, a, p, q));
+                }
+                else
+                {
+                    free(buffer);
+                    return 1;
+                }
+            }
+        }
+    }
+    else
+    {
+        free(buffer);
+        return 1;
+    }
+    
+    return 0;
+}
